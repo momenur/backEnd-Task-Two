@@ -1,3 +1,7 @@
+## live API Link:
+
+- https://assingment-two-theta.vercel.app
+
 # Dependencies
 
 - mongoose
