@@ -1,4 +1,4 @@
-import { User } from './user.interface';
+import { Orders, User } from './user.interface';
 import { UserModel } from './user.model';
 
 const getAllUsersFromDB = async () => {
@@ -29,10 +29,32 @@ const deleteSingleUserFromDB = async (userId: string) => {
   return result;
 };
 
+// Orders Operations
+const createProductIntoDB = async (userId: string, product: Orders) => {
+  const result = await UserModel.updateOne(
+    { userId },
+    { $push: { orders: { $each: [product] } } },
+  );
+  return result;
+};
+
+const getAllProductFromDB = async (userId: string) => {
+  const result = await UserModel.findOne({ userId }, { orders: 1 });
+  return result;
+};
+
+const getAllProductTotalPriceFromDB = async (userId: string) => {
+  const result = await UserModel.findOne({ userId }, { orders: 1 });
+  return result;
+};
+
 export const UserServices = {
   createUserIntoDB,
   getAllUsersFromDB,
   getSingleUserFromDB,
   deleteSingleUserFromDB,
   updateSingleUserFromDB,
+  createProductIntoDB,
+  getAllProductFromDB,
+  getAllProductTotalPriceFromDB,
 };

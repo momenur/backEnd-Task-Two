@@ -58,7 +58,7 @@ const updateSingleUser = async (req: Request, res: Response) => {
     const { userId } = req.params;
     const updatedUserData = req.body.user;
     const result = await UserServices.getSingleUserFromDB(userId);
-    if (!result) {
+    if (result) {
       await UserServices.updateSingleUserFromDB(userId, updatedUserData);
       res.status(200).json({
         success: true,
@@ -83,12 +83,93 @@ const updateSingleUser = async (req: Request, res: Response) => {
 const deleteSingleUser = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;
-    await UserServices.deleteSingleUserFromDB(userId);
+    const result = await UserServices.getSingleUserFromDB(userId);
+    if (result) {
+      await UserServices.deleteSingleUserFromDB(userId);
+      res.status(200).json({
+        success: true,
+        message: 'User deleted successfully!',
+        data: null,
+      });
+    } else {
+      res.status(404).json({
+        success: false,
+        message: 'User not found!',
+        data: {
+          code: 404,
+          description: 'User not found',
+        },
+      });
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+// Orders Operations
+const createProduct = async (req: Request, res: Response) => {
+  console.log('object');
+  try {
+    const { userId } = req.params;
+    const productData = req.body;
+    await UserServices.createProductIntoDB(userId, productData);
     res.status(200).json({
       success: true,
-      message: 'User deleted successfully!',
-      data: null,
+      message: 'Product Added successfully!',
+      data: productData,
     });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const getProduct = async (req: Request, res: Response) => {
+  try {
+    const { userId } = req.params;
+    const result = await UserServices.getAllProductFromDB(userId);
+    if (result) {
+      res.status(200).json({
+        success: true,
+        message: 'User fetched successfully!',
+        data: result,
+      });
+    } else {
+      res.status(404).json({
+        success: false,
+        message: 'User not found!',
+        data: {
+          code: 404,
+          description: 'User not found',
+        },
+      });
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+const getTotalPrice = async (req: Request, res: Response) => {
+  try {
+    const { userId } = req.params;
+    const result = await UserServices.getAllProductTotalPriceFromDB(userId);
+    if (result) {
+      const totalPrice = result?.orders.reduce((accumulator, currentValue) => {
+        return accumulator + currentValue.price;
+      }, 0);
+      res.status(200).json({
+        success: true,
+        message: `Total Price:${totalPrice}`,
+        data: totalPrice,
+      });
+    } else {
+      res.status(404).json({
+        success: false,
+        message: 'User not found!',
+        data: {
+          code: 404,
+          description: 'User not found',
+        },
+      });
+    }
   } catch (error) {
     console.log(error);
   }
@@ -100,4 +181,7 @@ export const UserControllers = {
   getSingleUser,
   updateSingleUser,
   deleteSingleUser,
+  createProduct,
+  getProduct,
+  getTotalPrice,
 };
