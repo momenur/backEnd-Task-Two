@@ -108,7 +108,6 @@ const deleteSingleUser = async (req: Request, res: Response) => {
 
 // Orders Operations
 const createProduct = async (req: Request, res: Response) => {
-  console.log('object');
   try {
     const { userId } = req.params;
     const productData = req.body;

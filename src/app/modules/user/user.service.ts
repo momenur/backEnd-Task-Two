@@ -2,7 +2,7 @@ import { Orders, User } from './user.interface';
 import { UserModel } from './user.model';
 
 const getAllUsersFromDB = async () => {
-  const result = await UserModel.find();
+  const result = await UserModel.find({}, { password: 0 });
   return result;
 };
 
