@@ -157,7 +157,9 @@ const getTotalPrice = async (req: Request, res: Response) => {
       res.status(200).json({
         success: true,
         message: `Total Price:${totalPrice}`,
-        data: totalPrice,
+        data: {
+          Total_Price: totalPrice,
+        },
       });
     } else {
       res.status(404).json({
