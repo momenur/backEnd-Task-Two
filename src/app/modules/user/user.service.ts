@@ -7,8 +7,7 @@ const getAllUsersFromDB = async () => {
 };
 
 const getSingleUserFromDB = async (userId: string) => {
-  console.log('form delete');
-  const result = await UserModel.findOne({ userId });
+  const result = await UserModel.findOne({ userId }, { password: 0 });
   return result;
 };
 
@@ -17,8 +16,15 @@ const createUserIntoDB = async (user: User) => {
   return result;
 };
 
+const updateSingleUserFromDB = async (
+  userId: string,
+  updatedUserData: User,
+) => {
+  const result = await UserModel.updateOne({ userId }, updatedUserData);
+  return result;
+};
+
 const deleteSingleUserFromDB = async (userId: string) => {
-  console.log(userId);
   const result = await UserModel.deleteOne({ userId });
   return result;
 };
@@ -28,4 +34,5 @@ export const UserServices = {
   getAllUsersFromDB,
   getSingleUserFromDB,
   deleteSingleUserFromDB,
+  updateSingleUserFromDB,
 };
