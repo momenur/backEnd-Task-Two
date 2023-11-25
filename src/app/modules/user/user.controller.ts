@@ -18,11 +18,22 @@ const getSingleUser = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;
     const result = await UserServices.getSingleUserFromDB(userId);
-    res.status(200).json({
-      success: true,
-      message: 'User fetched successfully!',
-      data: result,
-    });
+    if (result) {
+      res.status(200).json({
+        success: true,
+        message: 'User fetched successfully!',
+        data: result,
+      });
+    } else {
+      res.status(404).json({
+        success: false,
+        message: 'User not found!',
+        data: {
+          code: 404,
+          description: 'User not found',
+        },
+      });
+    }
   } catch (error) {
     console.log(error);
   }
@@ -46,12 +57,24 @@ const updateSingleUser = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;
     const updatedUserData = req.body.user;
-    await UserServices.updateSingleUserFromDB(userId, updatedUserData);
-    res.status(200).json({
-      success: true,
-      message: 'User updated successfully!',
-      data: updatedUserData,
-    });
+    const result = await UserServices.getSingleUserFromDB(userId);
+    if (!result) {
+      await UserServices.updateSingleUserFromDB(userId, updatedUserData);
+      res.status(200).json({
+        success: true,
+        message: 'User updated successfully!',
+        data: updatedUserData,
+      });
+    } else {
+      res.status(404).json({
+        success: false,
+        message: 'User not found!',
+        data: {
+          code: 404,
+          description: 'User not found',
+        },
+      });
+    }
   } catch (error) {
     console.log(error);
   }
