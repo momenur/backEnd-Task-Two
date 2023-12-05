@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { UserServices } from './user.service';
+import userValidationSchema from './user.validation';
 
 const getAllUsers = async (req: Request, res: Response) => {
   try {
@@ -41,14 +42,19 @@ const getSingleUser = async (req: Request, res: Response) => {
 
 const createUser = async (req: Request, res: Response) => {
   try {
-    const { user } = req.body;
-    const result = await UserServices.createUserIntoDB(user);
+    const user = req.body;
+    const zodValidateData = userValidationSchema.parse(user);
+    const result = await UserServices.createUserIntoDB(zodValidateData);
     res.status(200).json({
       success: true,
       message: 'User created successfully!',
       data: result,
     });
   } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Something Went wrong!!',
+    });
     console.log(error);
   }
 };
@@ -56,7 +62,7 @@ const createUser = async (req: Request, res: Response) => {
 const updateSingleUser = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;
-    const updatedUserData = req.body.user;
+    const updatedUserData = req.body;
     const result = await UserServices.getSingleUserFromDB(userId);
     if (result) {
       await UserServices.updateSingleUserFromDB(userId, updatedUserData);
@@ -115,7 +121,7 @@ const createProduct = async (req: Request, res: Response) => {
     res.status(200).json({
       success: true,
       message: 'Product Added successfully!',
-      data: productData,
+      data: null,
     });
   } catch (error) {
     console.log(error);

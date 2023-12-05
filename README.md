@@ -20,3 +20,7 @@
 - prettier
 - ts-node-dev
 - typescript
+
+# Run Application locally
+
+- npm run start:dev
